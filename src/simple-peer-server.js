@@ -49,10 +49,10 @@ class SimplePeerServer {
     });
   }
   getRooms() {
-    return this.room;
+    return this.rooms;
   }
   setRooms(array) {
-    this.room = array;
+    this.rooms = array;
   }
   _handleMessage(message, socket) {
     this.debug && console.log('Client said: ', message);
