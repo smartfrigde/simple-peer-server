@@ -2,7 +2,7 @@ class SimplePeerServer {
   constructor(httpServer, debug, rooms, simplePeerOptions) {
     this.ioServer;
     this.roomCounter = 0;
-    this.rooms = rooms;
+    this.rooms = [];
     this.debug = false;
     if (typeof debug !== 'undefined') {
       this.debug = true;
@@ -48,7 +48,12 @@ class SimplePeerServer {
       }
     });
   }
-
+  getRooms() {
+    return this.room;
+  }
+  setRooms(array) {
+    this.room = array;
+  }
   _handleMessage(message, socket) {
     this.debug && console.log('Client said: ', message);
     // for a real app, would be room-only (not broadcast)
