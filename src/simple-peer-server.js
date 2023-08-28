@@ -1,5 +1,5 @@
 class SimplePeerServer {
-  constructor(httpServer, debug, rooms, simplePeerOptions) {
+  constructor(httpServer, debug, simplePeerOptions) {
     this.ioServer;
     this.roomCounter = 0;
     this.rooms = [];
