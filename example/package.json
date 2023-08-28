@@ -7,7 +7,7 @@
     "watch": "nodemon --inspect app.js"
   },
   "dependencies": {
-    "simple-peer-server": ""
+    "simple-peer-server": "../"
   },
   "devDependencies": {
     "nodemon": "^2.0.12"

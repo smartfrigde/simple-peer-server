@@ -1,9 +1,8 @@
 class SimplePeerServer {
-  constructor(httpServer, debug, simplePeerOptions) {
+  constructor(httpServer, debug, rooms, simplePeerOptions) {
     this.ioServer;
-    this.rooms = [];
     this.roomCounter = 0;
-
+    this.rooms = rooms;
     this.debug = false;
     if (typeof debug !== 'undefined') {
       this.debug = true;
@@ -36,8 +35,8 @@ class SimplePeerServer {
       socket.on('sending signal', (message) =>
         this._handleSendSignal(message, socket),
       );
-      socket.on('create or join', () =>
-        this._handleCreateOrJoin(socket, this.ioServer),
+      socket.on('create or join', (arg) =>
+        this._handleCreateOrJoin(socket, arg, this.ioServer),
       );
       socket.on('hangup', () => this._handleHangup(socket));
       socket.on('disconnect', (reason) =>
@@ -67,7 +66,7 @@ class SimplePeerServer {
     socket.to(message.room).emit('sending signal', message);
   }
 
-  _handleCreateOrJoin(socket, ioServer) {
+  _handleCreateOrJoin(socket, roomName, ioServer) {
     const clientIds = Array.from(
       this.ioServer.sockets.sockets.keys(),
     );
@@ -76,7 +75,7 @@ class SimplePeerServer {
     this.debug && console.log('NUMCLIENTS, ' + numClients);
 
     if (numClients === 1) {
-      const room = this._createRoom();
+      const room = this._createRoom(roomName);
       socket.join(room);
       socket.emit('created', room, socket.id);
 
@@ -85,7 +84,7 @@ class SimplePeerServer {
           'Client ID ' + socket.id + ' created room ' + room,
         );
     } else if (numClients === 2) {
-      const room = this.rooms[0];
+      const room = roomName;
       this.ioServer.sockets.in(room).emit('join', room);
       socket.join(room);
       socket.emit('joined', room, socket.id);
@@ -99,7 +98,7 @@ class SimplePeerServer {
       for (let i = 0; i < numClients; i++) {
         if (socket.id !== clientIds[i]) {
           // create a room and join it
-          const room = this._createRoom();
+          const room = this._createRoom(roomName);
           socket.join(room);
           this.debug &&
             console.log(
@@ -123,9 +122,8 @@ class SimplePeerServer {
     }
   }
 
-  _createRoom() {
-    const room = 'room' + this.roomCounter;
-    this.rooms.push(room);
+  _createRoom(roomName) {
+    this.rooms.push(roomName);
     this.debug && console.log('number of rooms ' + this.rooms.length);
     this.roomCounter++;
     return room;
