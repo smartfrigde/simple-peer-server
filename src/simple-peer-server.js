@@ -126,7 +126,7 @@ class SimplePeerServer {
     this.rooms.push(roomName);
     this.debug && console.log('number of rooms ' + this.rooms.length);
     this.roomCounter++;
-    return room;
+    return roomName; // we aren't using an randomised id system
   }
 
   _handleHangup() {
